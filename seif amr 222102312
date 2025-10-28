@@ -1,89 +1,31 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "c2607b5e",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import numpy as np\n",
-    "def pearson_correlation(user1, user2):\n",
-    "    \"\"\"Calculate Pearson correlation between two users\"\"\"\n",
-    "\n",
-    "    # Get common rated items\n",
-    "    mask = []\n",
-    "    for i in range(len(user1)):\n",
-    "        if user1[i] != 0 and user2[i] != 0:\n",
-    "            mask.append(i)\n",
-    "\n",
-    "    if len(mask) == 0:\n",
-    "        return 0\n",
-    "\n",
-    "    # Extract common ratings\n",
-    "    u1 = [user1[i] for i in mask]\n",
-    "    u2 = [user2[i] for i in mask]\n",
-    "\n",
-    "    # Compute means manually\n",
-    "    sum1 = 0\n",
-    "    sum2 = 0\n",
-    "    for i in range(len(u1)):\n",
-    "        sum1 += u1[i]\n",
-    "        sum2 += u2[i]\n",
-    "\n",
-    "    mean1 = sum1 / len(u1)\n",
-    "    mean2 = sum2 / len(u2)\n",
-    "\n",
-    "    # Compute deviations\n",
-    "    dev1 = []\n",
-    "    dev2 = []\n",
-    "    for i in range(len(u1)):\n",
-    "        dev1.append(u1[i] - mean1)\n",
-    "        dev2.append(u2[i] - mean2)\n",
-    "        \n",
-    "\n",
-    "    # Compute numerator (dot product)\n",
-    "    numerator = 0\n",
-    "    for i in range(len(dev1)):\n",
-    "      numerator+=dev1[i]*dev2[i]\n",
-    "\n",
-    "    # Compute denominator (sqrt of sum of squares)\n",
-    "    sum_sq1 = 0\n",
-    "    sum_sq2 = 0\n",
-    "    for i in range(len(dev1)):\n",
-    "        sum_sq1 += dev1[i] ** 2\n",
-    "        sum_sq2 += dev2[i] ** 2\n",
-    "\n",
-    "    # TODO: calculate denominator using power (no np.sqrt)\n",
-    "    denominator = (sum_sq1 ** 0.5) * (sum_sq2 ** 0.5)\n",
-    "\n",
-    "    if denominator == 0:\n",
-    "        return 0\n",
-    "\n",
-    "    return numerator / denominator\n",
-    "\n",
-    "\n",
-    "# Example usage\n",
-    "user_A = np.array([5, 3, 0, 4, 0, 2])\n",
-    "user_C = np.array([4, 3, 4, 3, 5, 3])\n",
-    "\n",
-    "correlation = pearson_correlation(user_A, user_C)\n",
-    "print(f\"Pearson Correlation: {correlation:.3f}\")\n",
-    "# Output: Pearson Correlation: 0.775"
-   ]
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "name": "python",
-   "version": "3.10.0"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
-}
+import numpy as np
+
+
+def cosine_similarity(user1, user2):
+    mask = (user1 != 0) & (user2 != 0)
+    if not np.any(mask):
+        return 0
+
+    u1 = user1[mask]
+    u2 = user2[mask]
+
+    dot_product = np.sum(u1 * u2)
+    magnitude1 = np.sqrt(np.sum(u1 ** 2))
+    magnitude2 = np.sqrt(np.sum(u2 ** 2))
+
+    if magnitude1 == 0 or magnitude2 == 0:
+        return 0
+
+    return dot_product / (magnitude1 * magnitude2)
+
+
+# Examples
+user_A = np.array([5, 3, 0, 4, 0, 2])
+user_B = np.array([3, 0, 2, 3, 3, 0])
+user_C = np.array([4, 3, 4, 3, 5, 3])
+
+similarity_AB = cosine_similarity(user_A, user_B)
+similarity_AC = cosine_similarity(user_A, user_C)
+
+print("Similarity (A, B):", similarity_AB)
+print("Similarity (A, C):", similarity_AC)
