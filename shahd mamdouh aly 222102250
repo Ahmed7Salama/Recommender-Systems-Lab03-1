@@ -1,0 +1,63 @@
+import numpy as np
+def pearson_correlation(user1, user2):
+    """Calculate Pearson correlation between two users"""
+
+    # Get common rated items
+    mask = []
+    for i in range(len(user1)):
+        if user1[i] != 0 and user2[i] != 0:
+            mask.append(i)
+
+    if len(mask) == 0:
+        return 0
+
+    # Extract common ratings
+    u1 = [user1[i] for i in mask]
+    u2 = [user2[i] for i in mask]
+
+    # Compute means manually
+    sum1 = 0
+    sum2 = 0
+    for i in range(len(u1)):
+        sum1 += u1[i]
+        sum2 += u2[i]
+
+    mean1 = sum1 / len(u1)
+    mean2 = sum2 / len(u2)
+
+    # Compute deviations
+    dev1 = []
+    dev2 = []
+    for i in range(len(u1)):
+        dev1.append(u1[i] - mean1)
+        dev2.append(u2[i] - mean2)
+        
+
+    # Compute numerator (dot product)
+    numerator = 0
+    for i in range(len(dev1)):
+      numerator+=dev1[i]*dev2[i]
+
+    # Compute denominator (sqrt of sum of squares)
+    sum_sq1 = 0
+    sum_sq2 = 0
+    for i in range(len(dev1)):
+        sum_sq1 += dev1[i] ** 2
+        sum_sq2 += dev2[i] ** 2
+
+    # TODO: calculate denominator using power (no np.sqrt)
+    denominator = (sum_sq1 ** 0.5) * (sum_sq2 ** 0.5)
+
+    if denominator == 0:
+        return 0
+
+    return numerator / denominator
+
+
+# Example usage
+user_A = np.array([5, 3, 0, 4, 0, 2])
+user_C = np.array([4, 3, 4, 3, 5, 3])
+
+correlation = pearson_correlation(user_A, user_C)
+print(f"Pearson Correlation: {correlation:.3f}")
+# Output: Pearson Correlation: 0.775
