@@ -1,50 +1,31 @@
 import numpy as np
-def pearson_correlation(user1, user2):
-    """Calculate Pearson correlation between two users"""
-    mask = []
-    for i in range(len(user1)):
-        if user1[i] != 0 and user2[i] != 0:
-            mask.append(i)
 
-    if len(mask) == 0:
+
+def cosine_similarity(user1, user2):
+    mask = (user1 != 0) & (user2 != 0)
+    if not np.any(mask):
         return 0
 
-    u1 = [user1[i] for i in mask]
-    u2 = [user2[i] for i in mask]
+    u1 = user1[mask]
+    u2 = user2[mask]
 
-    sum1 = 0
-    sum2 = 0
-    for i in range(len(u1)):
-        sum1 += u1[i]
-        sum2 += u2[i]
+    dot_product = np.sum(u1 * u2)
+    magnitude1 = np.sqrt(np.sum(u1 ** 2))
+    magnitude2 = np.sqrt(np.sum(u2 ** 2))
 
-    mean1 = sum1 / len(u1)
-    mean2 = sum2 / len(u2)
-
-    dev1 = []
-    dev2 = []
-    for i in range(len(u1)):
-        dev1.append(u1[i] - mean1)
-        dev2.append(u2[i] - mean2)
-        
-
-    numerator = 0
-    for i in range(len(dev1)):
-      numerator+=dev1[i]*dev2[i]
-
-    sum_sq1 = 0
-    sum_sq2 = 0
-    for i in range(len(dev1)):
-        sum_sq1 += dev1[i] ** 2
-        sum_sq2 += dev2[i] ** 2
-
-    denominator = (sum_sq1 ** 0.5) * (sum_sq2 ** 0.5)
-
-    if denominator == 0:
+    if magnitude1 == 0 or magnitude2 == 0:
         return 0
 
-    return numerator / denominator
+    return dot_product / (magnitude1 * magnitude2)
+
+
+# Examples
 user_A = np.array([5, 3, 0, 4, 0, 2])
+user_B = np.array([3, 0, 2, 3, 3, 0])
 user_C = np.array([4, 3, 4, 3, 5, 3])
-correlation = pearson_correlation(user_A, user_C)
-print(f"Pearson Correlation: {correlation:.3f}")
+
+similarity_AB = cosine_similarity(user_A, user_B)
+similarity_AC = cosine_similarity(user_A, user_C)
+
+print("Similarity (A, B):", similarity_AB)
+print("Similarity (A, C):", similarity_AC)
