@@ -36,4 +36,5 @@ similarity_AB = cosine_similarity(user_A, user_B)
 similarity_AC = cosine_similarity(user_A, user_C)
 
 print("Cosine Similarity (A, B):", similarity_AB)
+
 print("Cosine Similarity (A, C):", similarity_AC)
